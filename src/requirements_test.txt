@@ -1,0 +1,6 @@
+coverage
+exceptiongroup
+iniconfig
+mock
+pluggy
+pytest

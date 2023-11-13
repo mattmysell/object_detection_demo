@@ -1,0 +1,15 @@
+version: "3"
+services:
+  app:
+    build:
+      context: ../../
+      dockerfile: ./docker/pistols_demo/Dockerfile.local
+    image: pistols_demo_app:latest
+    container_name: pistols_demo_app_local
+    volumes:
+      - "../../configs:/home/app/configs"
+      - "../../src:/home/app/src"
+    restart: "no"
+    command: python3 /home/app/src/main.py
+    ports:
+      - "8080:5000"
