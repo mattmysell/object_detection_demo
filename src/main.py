@@ -4,12 +4,11 @@ Code running the project.
 """
 
 # Standard Libraries
-from time import sleep
 
 # Installed Libraries
 
 # Local Files
+from app.endpoints import app
 
 if __name__ == "__main__":
-    sleep(10)
-    print("I'm done!")
+    app.run(host="0.0.0.0", port=5000, debug=True)

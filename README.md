@@ -9,5 +9,21 @@ This is a demo project for demonstrating how to apply machine learning for objec
 - Open a terminal at the base of this project and run the following:
 
  ```bash
+ docker-compose -f ./docker/pistols_demo/docker-compose.local.yml build
  docker-compose -f ./docker/pistols_demo/docker-compose.local.yml up
  ```
+
+- To enter the docker container run the following in another terminal:
+
+```bash
+docker exec -it pistols_demo_app_local bash
+```
+
+### Run Unit Tests
+
+- After having the container up an running, open a new terminal and run the following:
+
+```bash
+docker exec -it pistols_demo_app_local python3 -m coverage run -m pytest
+docker exec -it pistols_demo_app_local python3 -m coverage report
+```
