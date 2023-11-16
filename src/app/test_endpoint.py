@@ -13,9 +13,9 @@ from endpoints import app
 
 THIS_DIR = dirname(realpath(__file__))
 
-def test_endpoint_detect_pistol():
+def test_endpoint_detect_handgun():
     """
-    test_endpoint_detect_pistol() --> null
+    test_endpoint_detect_handgun() --> null
     """
     with open(join(THIS_DIR, "test_image_00.jpg"), "rb") as image_file:
         test_image = image_file.read()
@@ -23,9 +23,9 @@ def test_endpoint_detect_pistol():
     with app.test_client() as client:
         data = {}
         data["file"] = (BytesIO(test_image), "image.jpg")
-        response = client.post("/detect_pistol", data=data, content_type="multipart/form-data")
+        response = client.post("/detect_handguns", data=data, content_type="multipart/form-data")
         assert response.status_code == 200
 
         # Test that having no file fails.
-        response = client.post("/detect_pistol")
+        response = client.post("/detect_handguns")
         assert response.status_code == 400

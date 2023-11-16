@@ -3,9 +3,9 @@ services:
   app:
     build:
       context: ../../
-      dockerfile: ./docker/pistols_demo/Dockerfile.local
-    image: pistols_demo_app:latest
-    container_name: pistols_demo_app_local
+      dockerfile: ./docker/object_detection_demo/Dockerfile.local
+    image: objection_detection_demo_app:latest
+    container_name: objection_detection_demo_app_local
     volumes:
       - "../../configs:/home/app/configs"
       - "../../src:/home/app/src"

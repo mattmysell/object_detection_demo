@@ -4,7 +4,6 @@ Code for the endpoints in this application.
 """
 # Standard Libraries
 from base64 import b64encode
-from json import dumps
 from PIL import Image
 
 # Installed Libraries
@@ -12,12 +11,12 @@ from flask import Flask, request, jsonify
 
 # Local Files
 
-app = Flask("detect_pistols_demo")
+app = Flask("object_detection_demo")
 
-@app.route("/detect_pistol", methods=["POST"])
-def endpoint_detect_pistol():
+@app.route("/detect_handguns", methods=["POST"])
+def endpoint_detect_handguns():
     """
-    endpoint_detect_pistol() --> Response
+    endpoint_detect_handguns() --> Response
     """
     image_file = request.files["file"]
     img = Image.open(image_file.stream)

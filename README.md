@@ -1,6 +1,6 @@
-# Detect Pistols Demo
+# Detect Handguns Demo
 
-This is a demo project for demonstrating how to apply machine learning for object detection and then create and API backend to request detection of pistols in images.
+This is a demo project for demonstrating how to apply machine learning for object detection and then create and API backend to request detection of handguns in images.
 
 ## Running Locally
 
@@ -9,14 +9,14 @@ This is a demo project for demonstrating how to apply machine learning for objec
 - Open a terminal at the base of this project and run the following:
 
  ```bash
- docker-compose -f ./docker/pistols_demo/docker-compose.local.yml build
- docker-compose -f ./docker/pistols_demo/docker-compose.local.yml up
+ docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml build
+ docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml up
  ```
 
 - To enter the docker container run the following in another terminal:
 
 ```bash
-docker exec -it pistols_demo_app_local bash
+docker exec -it objection_detection_demo_app_local bash
 ```
 
 ### Run Unit Tests
@@ -24,6 +24,6 @@ docker exec -it pistols_demo_app_local bash
 - After having the container up an running, open a new terminal and run the following:
 
 ```bash
-docker exec -it pistols_demo_app_local python3 -m coverage run -m pytest
-docker exec -it pistols_demo_app_local python3 -m coverage report
+docker exec -it objection_detection_demo_app_local python3 -m coverage run -m pytest
+docker exec -it objection_detection_demo_app_local python3 -m coverage report
 ```
