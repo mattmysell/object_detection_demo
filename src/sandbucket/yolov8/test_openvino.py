@@ -11,6 +11,7 @@ This was run with the following python libraries installed:
 test_yolov8.py must be run before this file, then run from this directory as:
     python test_yolov8.py
 """
+from collections import namedtuple
 # import numpy as np
 from os import makedirs
 
@@ -18,8 +19,9 @@ from os import makedirs
 import cv2 # We have to disable no member as pylint is not aware of cv2s members.
 from openvino.runtime import Core
 
-ie = Core()
+Box = namedtuple("Box", ["x_center", "y_center", "w", "h"])
 
+ie = Core()
 model = ie.read_model(model="best_openvino_model/best.xml")
 compiled_model = ie.compile_model(model=model, device_name="CPU")
 
@@ -39,13 +41,14 @@ boxes = []
 scores = []
 class_ids = []
 
+MIN_SCORE = 0.5
+
 for row in output:
-    # Each row is [x, y, width, height, probability class 0, probability class 1, ...]
+    # Each row is [center x, center y, width, height, probability class 0, probability class 1, ...]
     classes_scores = row[4:]
     (_min_score, max_score, _min_class_loc, (_x, max_class_index)) = cv2.minMaxLoc(classes_scores)
-    if max_score >= 0.25:
-        box = [row[0] - (0.5 * row[2]), row[1] - (0.5 * row[3]), row[2], row[3]]
-        boxes.append(box)
+    if max_score >= MIN_SCORE:
+        boxes.append(Box(row[0], row[1], row[2], row[3]))
         scores.append(max_score)
         class_ids.append(max_class_index)
 
@@ -54,13 +57,14 @@ length = max((height, width))
 scale = length/480
 
 # Apply NMS (Non-maximum suppression)
-RESULT_BOXES = cv2.dnn.NMSBoxes(boxes, scores, 0.5, 0.6, 0.5)
+RESULT_BOXES = cv2.dnn.NMSBoxes(boxes, scores, MIN_SCORE, 0.6, 0.5)
 for index in RESULT_BOXES:
     box = boxes[index]
-    x, y = round(box[0] * scale), round(box[1] * scale)
-    x_plus_w, y_plus_h = round((box[0] + box[2]) * scale), round((box[1] + box[3]) * scale)
-    image = cv2.rectangle(cv2.UMat(image), (x, y), (x_plus_w, y_plus_h), (0, 0, 255), 8)
-    image = cv2.putText(cv2.UMat(image), f"handgun {round(scores[index], 2)}", (x - 10, y - 12),
+    top_left = (round((box.x_center - (box.w/2.)) * scale), round((box.y_center - (box.h/2.)) * scale))
+    top_right = (round((box.x_center + (box.w/2.)) * scale), round((box.y_center + (box.h/2.)) * scale))
+    image = cv2.rectangle(cv2.UMat(image), top_left, top_right, (0, 0, 255), 8)
+    image = cv2.putText(cv2.UMat(image), f"handgun {round(scores[index], 2)}",
+                        (top_left[0] - 10, top_left[1] - 12),
                         cv2.FONT_HERSHEY_SIMPLEX, 3, (0,0,255), 8)
 
 makedirs("runs/openvino", exist_ok=True)
