@@ -57,7 +57,9 @@ length = max((height, width))
 scale = length/480
 
 # Apply NMS (Non-maximum suppression)
-RESULT_BOXES = cv2.dnn.NMSBoxes(boxes, scores, MIN_SCORE, 0.6, 0.5)
+RESULT_BOXES = cv2.dnn.NMSBoxes(
+    [[box.x_center, box.x_center, box.w, box.h] for box in boxes], scores, MIN_SCORE, 0.6, 0.5)
+
 for index in RESULT_BOXES:
     box = boxes[index]
     top_left = (round((box.x_center - (box.w/2.)) * scale), round((box.y_center - (box.h/2.)) * scale))
