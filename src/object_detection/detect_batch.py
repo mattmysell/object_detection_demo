@@ -4,7 +4,7 @@ Code for running object detection on an image.
 """
 
 # Standard Libraries
-from typing import List, Union
+from typing import List, Tuple, Union
 
 # Installed Libraries
 # pylint: disable=no-member
@@ -22,7 +22,7 @@ from detections import is_type_list, Detections
 # Create connection to the model server
 CLIENT_ADDRESS = "localhost:9000"
 
-def get_stub(using_tls:bool=False)->PredictionServiceStub:
+def get_stub(using_tls: bool=False) -> PredictionServiceStub:
     """
     The PredictionServiceStub provides access to machine-learned models loaded by model_servers.
     """
@@ -33,7 +33,7 @@ def get_stub(using_tls:bool=False)->PredictionServiceStub:
     channel = insecure_channel(CLIENT_ADDRESS)
     return prediction_service_pb2_grpc.PredictionServiceStub(channel)
 
-def load_blobs(images:Union[str, List[NDArray]], model_shape:List[int])->[NDArray, List[NDArray]]:
+def load_blobs(images: Union[str, List[NDArray]], model_shape: List[int]) -> Tuple[NDArray, List[NDArray]]:
     """
     Load the images in, if required, and convert to blobs.
     """
@@ -48,8 +48,8 @@ def load_blobs(images:Union[str, List[NDArray]], model_shape:List[int])->[NDArra
         blobs = np.append(blobs, image_blobs, axis=0)
     return blobs, images
 
-def detect_batch(images:Union[str, List[NDArray]], model_name:str, model_classes:List[str], model_shape:List[int],
-                 batch_size:int=1)->NDArray:
+def detect_batch(images: Union[str, List[NDArray]], model_name: str, model_classes: List[str], model_shape: List[int],
+                 batch_size: int=1) -> NDArray:
     """
     Detect the objects in an image and return an image with the results.
     """
@@ -81,10 +81,10 @@ def detect_batch(images:Union[str, List[NDArray]], model_name:str, model_classes
             detections.apply_non_max_suppression()
             output_image = detections.draw(output_image)
 
-            cv2.imwrite(f"./output/test_image_batch_{x}_{y}.jpg", output_image)
+            cv2.imwrite(f"./output/test_batch_{x}_{y}.jpg", output_image)
 
 if __name__ == "__main__":
-    detect_batch(["./images/test_image_00.jpg"], "handguns", ["handgun"], (480, 480), 1)
+    detect_batch(["./images/test_00.jpg"], "handguns", ["handgun"], (480, 480), 1)
 
-    # cv2.imwrite("./output/test_image_00_detect.jpg",
-    #             detect("./images/test_image_00.jpg", "handguns", ["handgun"], (480, 480)))
+    # cv2.imwrite("./output/test_00_detect.jpg",
+    #             detect("./images/test_00.jpg", "handguns", ["handgun"], (480, 480)))

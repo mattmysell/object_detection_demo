@@ -17,7 +17,7 @@ from numpy.typing import NDArray
 CONFIDENCE_THRESHOLD = 0.4
 OVERLAP_THRESHOLD = 0.5
 
-def is_type(value:any, type_function:Callable)->bool:
+def is_type(value: any, type_function: Callable) -> bool:
     """
     value => any variable.
     type_function => function to convert type.
@@ -30,7 +30,7 @@ def is_type(value:any, type_function:Callable)->bool:
     except ValueError:
         return False
 
-def is_type_list(value:any, type_function:Callable, list_length:Union[int, List[int], None]=None)->bool:
+def is_type_list(value: any, type_function: Callable, list_length: Union[int, List[int], None]=None) -> bool:
     """
     value => any variable.
     type_function => function to convert type, for the variables in the list.
@@ -52,7 +52,8 @@ class Detections():
     """
     Detections class.
     """
-    def __init__(self, class_names:List[str], input_array:any, input_type:str="xcycwhps", model_shape:List[int]=None):
+    def __init__(self, class_names: List[str], input_array: any, input_type: str="xcycwhps",
+                 model_shape: List[int]=None):
         """
         class_names => list of class names, can also be a tuple or numpy array.
         input_array => output from an object detection predicition, can be in various formats.
@@ -77,7 +78,7 @@ class Detections():
         else:
             raise NotImplementedError("Coordinate type is not implemented")
 
-    def _import_type_xcycwhps(self, input_array:List[List[float]], model_shape:List[int]):
+    def _import_type_xcycwhps(self, input_array: List[List[float]], model_shape: List[int]):
         """
         input_array => a 2D list, tuple or ndarray of floats.
         model_shape => pixel height and width of the models output shape.
@@ -116,7 +117,7 @@ class Detections():
         """
         self.nms_indexs = cv2.dnn.NMSBoxes(self.boxes, self.confidences, CONFIDENCE_THRESHOLD, OVERLAP_THRESHOLD)
 
-    def draw(self, image:NDArray, include_confidence:bool=True, color:List[int]=None)->NDArray:
+    def draw(self, image: NDArray, include_confidence: bool=True, color: List[int]=None) -> NDArray:
         """
         color => list of int, in BGR format.
 
@@ -132,9 +133,9 @@ class Detections():
             [x, y, w, h] = self.boxes[i]
             p1 = (round(width*(x - w/2)), round(height*(y - h/2)))
             p2 = (round(width*(x + w/2)), round(height*(y + h/2)))
-            image = cv2.rectangle(image, p1, p2, color, 8)
+            image = cv2.rectangle(image, p1, p2, color, 2)
 
             if include_confidence:
                 image = cv2.putText(image, f"{self.class_names[self.classes[i]]} {round(self.confidences[i], 2)}",
-                    (p1[0] - 10, p1[1] - 12), cv2.FONT_HERSHEY_SIMPLEX, 3, color, 8)
+                    (p1[0] - 2, p1[1] - 6), cv2.FONT_HERSHEY_SIMPLEX, 0.8, color, 2)
         return image
