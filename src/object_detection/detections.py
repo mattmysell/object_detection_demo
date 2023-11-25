@@ -2,7 +2,6 @@
 """
 Code for a detections class to describe and transform the results of object detection.
 """
-
 # Standard Libraries
 from typing import Callable, List, Union
 

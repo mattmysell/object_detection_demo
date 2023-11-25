@@ -24,4 +24,4 @@ services:
     #   - "9000"
     ports:
       - "9000:9000"
-    command: "--model_name 'handguns' --model_path '/models/handguns_v8n'  --port '9000' --layout 'NCHW:NCHW' --shape 'auto' --log_level DEBUG"
+    command: "--model_name 'handguns' --model_path '/models/handguns'  --port '9000' --layout 'NCHW:NCHW' --shape 'auto' --log_level DEBUG"

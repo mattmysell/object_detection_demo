@@ -2,7 +2,6 @@
 """
 Code for running object detection on batches of images, more suitable for GPUs.
 """
-
 # Standard Libraries
 from os import environ
 from time import perf_counter
@@ -20,6 +19,7 @@ from tensorflow_serving.apis.prediction_service_pb2_grpc import PredictionServic
 
 # Local Files
 from detections import is_type_list, Detections
+from metadata import get_model_metadata, ModelMetadata
 from utils import print_statistics
 
 # Create connection to the model server
@@ -54,14 +54,13 @@ def load_blobs(images: Union[str, List[NDArray]], model_shape: List[int]) -> Tup
         blobs = np.append(blobs, image_blobs, axis=0)
     return blobs, images
 
-def batch_inference(blobs: NDArray, model_name: str, model_classes: List[str], model_shape: List[int],
-                     batch_size: int) -> List[Detections]:
+def batch_inference(blobs: NDArray, model_meta: ModelMetadata, batch_size: int) -> List[Detections]:
     """
     Perfrom the inference on the blobs in batches.
     """
     detections = []
     request = predict_pb2.PredictRequest()
-    request.model_spec.name = model_name
+    request.model_spec.name = model_meta.name
     for x in range(0, blobs.shape[0] - batch_size + 1, batch_size):
         batch_blobs = blobs[x:(x + batch_size)]
         request.inputs["images"].CopyFrom(make_tensor_proto(batch_blobs, shape=batch_blobs.shape))
@@ -70,27 +69,26 @@ def batch_inference(blobs: NDArray, model_name: str, model_classes: List[str], m
 
         for y in range(batch_output.shape[0]):  # Iterate over all responses from images in the batch.
             output = cv2.transpose(batch_output[y])
-            detections.append(Detections(model_classes, output, model_shape=model_shape))
+            detections.append(Detections(model_meta.classes, output, model_shape=model_meta.input_shape))
             detections[-1].apply_non_max_suppression()
     return detections
 
-def detect_batch(images: Union[str, List[NDArray]], model_name: str, model_classes: List[str], model_shape: List[int],
-                 batch_size: int=1) -> Union[float, None]:
+def detect_batch(images: Union[str, List[NDArray]], model_meta: ModelMetadata, batch_size: int=1) -> Union[float, None]:
     """
     Detect the objects in an image and return an image with the results.
     """
-    if not is_type_list(model_shape, int, (2, 3)):
+    if not is_type_list(model_meta.input_shape, int, (2, 3)):
         raise ValueError("Invalid model_shape provided, expected [int, int]")
 
     if len(images) == 0:
         # No images were provided, so return.
         return None
 
-    blobs, images = load_blobs(images, model_shape)
+    blobs, images = load_blobs(images, model_meta.input_shape)
     detections = []
 
     inference_start = perf_counter()
-    detections = batch_inference(blobs, model_name, model_classes, model_shape, batch_size)
+    detections = batch_inference(blobs, model_meta, batch_size)
     inference_end = perf_counter()
 
     for i, output_image in enumerate(images):
@@ -100,6 +98,7 @@ def detect_batch(images: Union[str, List[NDArray]], model_name: str, model_class
     return inference_end - inference_start
 
 if __name__ == "__main__":
+    model_metadata = get_model_metadata("handguns")
     input_images = [f"./images/test_{str(i).zfill(2)}.jpg" for i in range(6)]
-    inference_seconds = detect_batch(input_images, "handguns", ["handgun"], (480, 480), 3)
+    inference_seconds = detect_batch(input_images, model_metadata, 3)
     print_statistics([inference_seconds*1000], 1)
