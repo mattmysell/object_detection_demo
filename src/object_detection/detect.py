@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """
-Code for running object detection on an image.
+Code for running object detection on an image, more suitable for CPUs.
 """
 
 # Standard Libraries
+from os import environ
 from time import perf_counter
 from typing import List, Tuple, Union
 
@@ -18,7 +19,9 @@ from detections import Detections
 from utils import print_statistics
 
 # Create connection to the model server
-CLIENT = make_grpc_client("localhost:9000")
+HOST = environ.get("INFERENCE_HOST", "localhost")
+PORT = environ.get("INFERENCE_PORTT", "9000")
+CLIENT = make_grpc_client(f"{HOST}:{PORT}")
 
 def detect(image: Union[str, NDArray], model_name: str, model_classes: List[str],
            model_shape: List[int]) -> Tuple[NDArray, float]:
@@ -32,16 +35,15 @@ def detect(image: Union[str, NDArray], model_name: str, model_classes: List[str]
     """
     if isinstance(image, str):
         image = cv2.imread(image)
-
-    # Transformation of the images is included in the inference time as it is required.
-    inference_start = perf_counter()
     blobs = cv2.dnn.blobFromImage(image, 1/255, model_shape, [0,0,0], 1, crop=False)
+
+    inference_start = perf_counter()
     output = CLIENT.predict(inputs={"images": blobs}, model_name=model_name)
     output = cv2.transpose(output[0])
 
     detections = Detections(model_classes, output, model_shape=model_shape)
     detections.apply_non_max_suppression()
-    # Everything after apply_non_max_suppression is excluded from inference time as it optional.
+    # Include apply non max suppression in inference as it is part of the process.
     inference_end = perf_counter()
 
     image = detections.draw(image)

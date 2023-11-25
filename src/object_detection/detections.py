@@ -14,8 +14,8 @@ from numpy.typing import NDArray
 
 # Local Files
 
-CONFIDENCE_THRESHOLD = 0.4
-OVERLAP_THRESHOLD = 0.5
+CONFIDENCE_THRESHOLD = 0.25 # Low confidence threshold as we want to lean towards the side of caution.
+OVERLAP_THRESHOLD = 0.4
 
 def is_type(value: any, type_function: Callable) -> bool:
     """
