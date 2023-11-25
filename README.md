@@ -13,7 +13,7 @@ This is a demo project for demonstrating how to apply machine learning for objec
  docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml up
  ```
 
-- To enter the docker container run the following in another terminal:
+- If you need to enter the app docker container run the following in another terminal:
 
 ```bash
 docker exec -it objection_detection_demo_app_local bash
