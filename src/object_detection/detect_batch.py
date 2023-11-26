@@ -77,7 +77,7 @@ def detect_batch(images: Union[str, List[NDArray]], model_meta: ModelMetadata, b
     """
     Detect the objects in an image and return an image with the results.
     """
-    if not is_type_list(model_meta.input_shape, int, (2, 3)):
+    if not is_type_list(model_meta.input_shape, int, exact_type=True, list_length=(2, 3)):
         raise ValueError("Invalid model_shape provided, expected [int, int]")
 
     if len(images) == 0:

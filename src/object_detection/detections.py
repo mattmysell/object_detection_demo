@@ -16,20 +16,26 @@ from numpy.typing import NDArray
 CONFIDENCE_THRESHOLD = 0.25 # Low confidence threshold as we want to lean towards the side of caution.
 OVERLAP_THRESHOLD = 0.4
 
-def is_type(value: any, type_function: Callable) -> bool:
+def is_type(value: any, allowed_types: Union[any, List[any], None], exact_type: bool=False) -> bool:
     """
     value => any variable.
-    type_function => function to convert type.
+    allowed_types => function to convert type.
 
     Check if the type is expected.
     """
+    if exact_type:
+        return isinstance(value, allowed_types)
+
     try:
-        type_function(value)
+        allowed_types(value)
         return True
     except ValueError:
         return False
+    except TypeError:
+        return False
 
-def is_type_list(value: any, type_function: Callable, list_length: Union[int, List[int], None]=None) -> bool:
+def is_type_list(value: any, type_function: Callable, exact_type: bool=False,
+                 list_length: Union[int, List[int], None]=None) -> bool:
     """
     value => any variable.
     type_function => function to convert type, for the variables in the list.
@@ -43,7 +49,7 @@ def is_type_list(value: any, type_function: Callable, list_length: Union[int, Li
         return False
     if isinstance(list_length, (list, tuple)) and not any(len(value) == length for length in list_length):
         return False
-    if any(not is_type(value, type_function) for value in value):
+    if any(not is_type(value, type_function, exact_type) for value in value):
         return False
     return True
 
@@ -62,7 +68,7 @@ class Detections():
         In this Detections class we want to use percentage of the image size, as a fraction, so that values are easily
         scaled to various image sizes.
         """
-        if not is_type_list(class_names, str):
+        if not is_type_list(class_names, str, exact_type=True):
             raise ValueError("Class name is not a list of str")
 
         self.class_names = class_names
@@ -92,7 +98,7 @@ class Detections():
         if not is_type_list(input_array[0], float):
             raise ValueError("Invalid input_array provided for \"xcycwhps\" type, expected a 2D list of floats")
 
-        if not is_type_list(model_shape, int, (2, 3)):
+        if not is_type_list(model_shape, int, list_length=(2, 3)):
             raise ValueError("Invalid model_shape provided for \"xcycwh\" type, expected [int, int]")
 
         self.shape = (int(model_shape[1]), int(model_shape[0])) # flip the input shape values around.
@@ -123,7 +129,7 @@ class Detections():
         Draw bounding boxes around the detections in an image, returning the resulting image.
         """
         color = color if color is not None else (0, 0, 255)
-        if not is_type_list(color, int, 3):
+        if not is_type_list(color, int, exact_type=True, list_length=3):
             raise ValueError("Invalid color provided, expected a list of 3 ints (b, g, r)")
 
         [height, width, _] = image.shape

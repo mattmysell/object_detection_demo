@@ -10,6 +10,7 @@ COPY src/requirements_test.txt /home/app/requirements/requirements_test.txt
 COPY src/requirements.txt /home/app/requirements/requirements.txt
 
 RUN apt-get update \
+    && apt-get install ffmpeg libsm6 libxext6  -y \
     && pip3 install -r /home/app/requirements/requirements_test.txt \
     && pip3 install -r /home/app/requirements/requirements.txt
 

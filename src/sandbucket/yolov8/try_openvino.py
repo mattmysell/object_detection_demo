@@ -3,7 +3,7 @@
 Code for testing use of Openvino Runtime with Exported YoloV8 model.
 
 This was run with the following python libraries installed:
-    opencv-python==4.8.0
+    opencv-python==4.8.0.76
     ultralytics==8.0.196
     onnx==1.15.0 onnxruntime==1.16.2
     openvino==2023.2.0 openvino-dev==2023.2.0
