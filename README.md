@@ -25,5 +25,5 @@ docker exec -it objection_detection_demo_app_local bash
 
 ```bash
 docker exec -it objection_detection_demo_app_local python3 -m coverage run -m pytest
-docker exec -it objection_detection_demo_app_local python3 -m coverage report
+docker exec -it objection_detection_demo_app_local python3 -m coverage report -i
 ```

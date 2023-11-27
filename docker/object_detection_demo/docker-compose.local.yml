@@ -9,6 +9,10 @@ services:
     volumes:
       - "../../configs:/home/app/configs"
       - "../../src:/home/app/src"
+      - "../../machine_learning/models:/home/app/models"
+    environment:
+      INFERENCE_HOST: inference
+      INFERENCE_PORTT: 9000
     restart: "no"
     command: "python3 /home/app/src/main.py"
     ports:

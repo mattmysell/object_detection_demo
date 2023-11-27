@@ -12,11 +12,11 @@ import cv2 # We have to disable no member as pylint is not aware of cv2s members
 from numpy.typing import NDArray
 
 # Local Files
-from detections import Detections
-from metadata import CLIENT, get_model_metadata, ModelMetadata
-from utils import print_statistics
+from object_detection.detections import Detections
+from object_detection.metadata import CLIENT, get_model_metadata, ModelMetadata
+from object_detection.utils import print_statistics
 
-def detect(image: Union[str, NDArray], model_meta: ModelMetadata) -> Tuple[NDArray, float]:
+def detect(image: Union[str, NDArray], model_meta: Union[str, ModelMetadata]) -> Tuple[NDArray, float]:
     """
     class_names => list of class names, can also be a tuple or numpy array.
     input_array => output from an object detection predicition, can be in various formats.
@@ -27,6 +27,8 @@ def detect(image: Union[str, NDArray], model_meta: ModelMetadata) -> Tuple[NDArr
     """
     if isinstance(image, str):
         image = cv2.imread(image)
+    if isinstance(model_meta, str):
+        model_meta = get_model_metadata(model_meta)
     blobs = cv2.dnn.blobFromImage(image, 1/255, model_meta.input_shape, [0,0,0], 1, crop=False)
 
     inference_start = perf_counter()
@@ -47,7 +49,7 @@ if __name__ == "__main__":
     inference_milliseconds = []
 
     for i in range(6):
-        in_path = f"./images/test_{str(i).zfill(2)}.jpg"
+        in_path = f"./test/test_{str(i).zfill(2)}.jpg"
         result_image, inference_second = detect(in_path, model_metadata)
         result_images.append(result_image)
         inference_milliseconds.append(inference_second*1000)

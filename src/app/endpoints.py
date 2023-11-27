@@ -3,13 +3,17 @@
 Code for the endpoints in this application.
 """
 # Standard Libraries
-from base64 import b64encode
-from PIL import Image
+# from base64 import b64encode
+# from PIL import Image
 
 # Installed Libraries
-from flask import Flask, request, jsonify
+# pylint: disable=no-member
+import cv2 # We have to disable no member as pylint is not aware of cv2s members.
+from flask import Flask, request, Response
+from numpy import frombuffer, uint8
 
 # Local Files
+from object_detection.detect import detect
 
 app = Flask("object_detection_demo")
 
@@ -19,16 +23,12 @@ def endpoint_detect_handguns():
     endpoint_detect_handguns() --> Response
     """
     image_file = request.files["file"]
-    img = Image.open(image_file.stream)
 
-    data = image_file.stream.read()
-    data = b64encode(data).decode()
+    numpy_array = frombuffer(image_file.stream.read(), uint8)
+    image = cv2.imdecode(numpy_array, cv2.IMREAD_COLOR)
 
-    output_dict = {
-        "msg": "success",
-        "size": [img.width, img.height],
-        "format": img.format,
-        "img": data
-    }
+    result_image, _time = detect(image, "handguns")
 
-    return jsonify(output_dict)
+    _retval, buffer = cv2.imencode('.jpg', result_image)
+
+    return Response(buffer.tobytes(), status=200, mimetype="image/jpeg")

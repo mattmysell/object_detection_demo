@@ -11,7 +11,7 @@ from numpy import array, ones
 from pytest import fixture, raises
 
 # Local Files
-from detections import is_type, is_type_list, Detections
+from object_detection.detections import is_type, is_type_list, Detections
 
 # This is for testing; only using docstrings if the naming is not descriptive enough, ignore access to protected, and
 # ignore redefining outer name for fixtures.

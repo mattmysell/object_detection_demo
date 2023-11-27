@@ -99,6 +99,6 @@ def detect_batch(images: Union[str, List[NDArray]], model_meta: ModelMetadata, b
 
 if __name__ == "__main__":
     model_metadata = get_model_metadata("handguns")
-    input_images = [f"./images/test_{str(i).zfill(2)}.jpg" for i in range(6)]
+    input_images = [f"./test/test_{str(i).zfill(2)}.jpg" for i in range(6)]
     inference_seconds = detect_batch(input_images, model_metadata, 3)
     print_statistics([inference_seconds*1000], 1)
