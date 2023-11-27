@@ -8,7 +8,7 @@ from typing import Callable, List, Union
 # Installed Libraries
 # pylint: disable=no-member
 import cv2 # We have to disable no member as pylint is not aware of cv2s members.
-from numpy import ndarray
+from numpy import asarray, ndarray
 from numpy.typing import NDArray
 
 # Local Files
@@ -69,7 +69,7 @@ class Detections():
         scaled to various image sizes.
         """
         if not is_type_list(class_names, str, exact_type=True):
-            raise ValueError("Class name is not a list of str")
+            raise ValueError("Class names is not a list of str")
 
         self.class_names = class_names
         self.shape = (1, 1) # (width, height)
@@ -81,27 +81,29 @@ class Detections():
         if input_type == "xcycwhps":
             self._import_type_xcycwhps(input_array, model_shape)
         else:
-            raise NotImplementedError("Coordinate type is not implemented")
+            raise NotImplementedError("Input type is not implemented")
 
     def _import_type_xcycwhps(self, input_array: List[List[float]], model_shape: List[int]):
         """
         input_array => a 2D list, tuple or ndarray of floats.
         model_shape => pixel height and width of the models output shape.
         """
-        if not is_type_list(input_array, list):
-            raise ValueError("Invalid input_array provided for \"xcycwhps\" type, expected a 2D list of floats")
-
-        if len(input_array) == 0:
-            # No detections so do nothing.
-            return
-
-        if not is_type_list(input_array[0], float):
-            raise ValueError("Invalid input_array provided for \"xcycwhps\" type, expected a 2D list of floats")
-
         if not is_type_list(model_shape, int, list_length=(2, 3)):
             raise ValueError("Invalid model_shape provided for \"xcycwh\" type, expected [int, int]")
 
         self.shape = (int(model_shape[1]), int(model_shape[0])) # flip the input shape values around.
+
+        if not is_type_list(input_array, list):
+            raise ValueError("Invalid input_array provided for \"xcycwhps\" type, expected a 2D list of floats")
+        if len(input_array) == 0: # No detections so do nothing.
+            return
+        if not is_type_list(input_array[0], float):
+            raise ValueError("Invalid input_array provided for \"xcycwhps\" type, expected a 2D list of floats")
+        if len(input_array[0]) < 5:
+            raise ValueError("Invalid input_array provided for \"xcycwhps\" type, expected shape (*, >=5)")
+
+        if not isinstance(input_array, ndarray):
+            input_array = asarray(input_array)
 
         for row in input_array:
             # Each row is [center x, center y, width, height, probability class 0, probability class 1, ...]

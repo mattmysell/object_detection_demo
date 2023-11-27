@@ -3,15 +3,21 @@
 Code for testing the functions and methods in detections.
 """
 # Standard Libraries
+from json import load
+from os.path import dirname, join, realpath
 
 # Installed Libraries
-from numpy import array
+from numpy import array, ones
+from pytest import fixture, raises
 
 # Local Files
-from detections import is_type, is_type_list
+from detections import is_type, is_type_list, Detections
 
-# This is for testing, only using docstrings if the naming is not descriptive enough.
-#pylint: disable=missing-function-docstring
+# This is for testing; only using docstrings if the naming is not descriptive enough, ignore access to protected, and
+# ignore redefining outer name for fixtures.
+#pylint: disable=missing-function-docstring, protected-access, redefined-outer-name
+
+THIS_DIR = dirname(realpath(__file__))
 
 class CannotStr: #pylint: disable=too-few-public-methods
     """
@@ -67,3 +73,87 @@ def test_is_type_list_with_specific_length():
     assert is_type_list([10, 20], int, list_length=(2, 3))
     assert not is_type_list([10], int, list_length=2)
     assert not is_type_list([10], int, list_length=(2, 3))
+
+## Testing Detections Class - __init__ ##
+
+def test_init_with_valid_inputs():
+    params = {"class_names": ["test"], "input_array": ones((10, 5)), "input_type": "xcycwhps",
+              "model_shape": [640., 480.]}
+    detections = Detections(**params)
+    assert detections.class_names == params["class_names"]
+    assert detections.shape == (480, 640)
+
+    params = {"class_names": ["test"], "input_array": ones((10, 5)), "model_shape": [640., 480.]}
+    detections = Detections(**params)
+    assert detections.class_names == params["class_names"]
+    assert detections.shape == (480, 640)
+
+def test_init_with_invalid_inputs():
+    params = {"class_names": "test", "input_array": ones((10, 5)), "input_type": "xcycwhps", "model_shape": [640, 480]}
+    with raises(ValueError) as exc:
+        _detections = Detections(**params)
+        assert str(exc) == "Class names is not a list of str"
+
+    params = {"class_names": ["test"], "input_array": ones((10, 5)), "input_type": "test", "model_shape": [640, 480]}
+    with raises(NotImplementedError):
+        _detections = Detections(**params)
+        assert str(exc) == "Input type is not implemented"
+
+## Testing Detections Class - _import_type_xcycwhps ##
+
+@fixture()
+def detections_base():
+    params = {"class_names": ["test"], "input_array": ones((10, 5)), "input_type": "xcycwhps",
+              "model_shape": [640., 480.]}
+    return Detections(**params)
+
+@fixture()
+def detections_real():
+    with open(join(THIS_DIR, "test", "test_xcycwhps_input.json"), "r") as input_json:
+        input_array = load(input_json)
+    params = {"class_names": ["handguns"], "input_array": input_array, "input_type": "xcycwhps",
+              "model_shape": [480, 480]}
+    return Detections(**params)
+
+def test_import_type_xcycwhps_with_invalid_inputs(detections_base):
+    params = {"input_array": ones((10, 4)), "model_shape": [480]}
+    with raises(ValueError) as exc:
+        detections_base._import_type_xcycwhps(**params)
+        assert str(exc) == "Invalid model_shape provided for \"xcycwh\" type, expected [int, int]"
+
+    params = {"input_array": 4.0, "model_shape": [480, 480]}
+    with raises(ValueError) as exc:
+        detections_base._import_type_xcycwhps(**params)
+        assert str(exc) == "Invalid input_array provided for \"xcycwhps\" type, expected a 2D list of floats"
+
+    params = {"input_array": [4.0], "model_shape": [480, 480]}
+    with raises(ValueError) as exc:
+        detections_base._import_type_xcycwhps(**params)
+        assert str(exc) == "Invalid input_array provided for \"xcycwhps\" type, expected a 2D list of floats"
+
+    params = {"input_array": [["a"]], "model_shape": [480, 480]}
+    with raises(ValueError) as exc:
+        detections_base._import_type_xcycwhps(**params)
+        assert str(exc) == "Invalid input_array provided for \"xcycwhps\" type, expected a 2D list of floats"
+
+    params = {"input_array": ones((10, 4)), "model_shape": [480, 480]}
+    with raises(ValueError) as exc:
+        detections_base._import_type_xcycwhps(**params)
+        assert str(exc) == "Invalid input_array provided for \"xcycwhps\" type, expected shape (*, >=5)"
+
+def test_import_type_xcycwhps_with_valid_inputs(detections_real):
+    with open(join(THIS_DIR, "test", "test_xcycwhps_expected.json"), "r") as expected_json:
+        expected_output = load(expected_json)
+    assert [detections_real.boxes[i] == box for i, box in enumerate(expected_output["boxes"])]
+    assert [detections_real.confidences[i] == box for i, box in enumerate(expected_output["confidences"])]
+    assert [detections_real.classes[i] == box for i, box in enumerate(expected_output["classes"])]
+
+## Testing Detections Class - apply_non_max_suppression ##
+
+def test_apply_non_max_suppression_with_valid_inputs(detections_real):
+    with open(join(THIS_DIR, "test", "test_xcycwhps_nms_expected.json"), "r") as expected_json:
+        expected_output = load(expected_json)
+    detections_real.apply_non_max_suppression()
+    assert [detections_real.boxes[i] == box for i, box in enumerate(expected_output["boxes"])]
+    assert [detections_real.confidences[i] == box for i, box in enumerate(expected_output["confidences"])]
+    assert [detections_real.classes[i] == box for i, box in enumerate(expected_output["classes"])]
