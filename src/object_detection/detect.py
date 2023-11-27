@@ -42,20 +42,3 @@ def detect(image: Union[str, NDArray], model_meta: Union[str, ModelMetadata]) ->
 
     image = detections.draw(image)
     return image, inference_end - inference_start
-
-if __name__ == "__main__":
-    model_metadata = get_model_metadata("handguns")
-    result_images = []
-    inference_milliseconds = []
-
-    for i in range(6):
-        in_path = f"./test/test_{str(i).zfill(2)}.jpg"
-        result_image, inference_second = detect(in_path, model_metadata)
-        result_images.append(result_image)
-        inference_milliseconds.append(inference_second*1000)
-
-    for i, result_image in enumerate(result_images):
-        out_path = f"./output/test_{str(i).zfill(2)}_detect.jpg"
-        cv2.imwrite(out_path, result_image)
-
-    print_statistics(inference_milliseconds, len(result_images))

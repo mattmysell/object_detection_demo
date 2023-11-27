@@ -18,9 +18,9 @@ from tensorflow_serving.apis import predict_pb2, prediction_service_pb2_grpc
 from tensorflow_serving.apis.prediction_service_pb2_grpc import PredictionServiceStub
 
 # Local Files
-from detections import is_type_list, Detections
-from metadata import get_model_metadata, ModelMetadata
-from utils import print_statistics
+from object_detection.detections import is_type_list, Detections
+from object_detection.metadata import get_model_metadata, ModelMetadata
+from object_detection.utils import print_statistics
 
 # Create connection to the model server
 HOST = environ.get("INFERENCE_HOST", "localhost")
@@ -96,9 +96,3 @@ def detect_batch(images: Union[str, List[NDArray]], model_meta: ModelMetadata, b
         cv2.imwrite(f"./output/test_{str(i).zfill(2)}_detect_batch.jpg", output_image)
 
     return inference_end - inference_start
-
-if __name__ == "__main__":
-    model_metadata = get_model_metadata("handguns")
-    input_images = [f"./test/test_{str(i).zfill(2)}.jpg" for i in range(6)]
-    inference_seconds = detect_batch(input_images, model_metadata, 3)
-    print_statistics([inference_seconds*1000], 1)
