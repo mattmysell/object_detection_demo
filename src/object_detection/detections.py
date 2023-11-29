@@ -3,6 +3,9 @@
 Code for a detections class to describe and transform the results of object detection.
 """
 # Standard Libraries
+from json import load
+from os import environ
+from os.path import dirname, join, pardir, realpath
 from typing import Callable, List, Union
 
 # Installed Libraries
@@ -13,8 +16,14 @@ from numpy.typing import NDArray
 
 # Local Files
 
-CONFIDENCE_THRESHOLD = 0.25 # Low confidence threshold as we want to lean towards the side of caution.
-OVERLAP_THRESHOLD = 0.4
+THIS_DIR = dirname(realpath(__file__))
+CONFIGS_DIR = environ.get("CONFIGS_DIR", join(THIS_DIR, pardir, pardir, "configs"))
+with open(join(CONFIGS_DIR, "object_detection.json"), "r") as input_json:
+    OBJECT_DETECTIONS_CONFIG = load(input_json)
+
+# Low confidence threshold as we want to lean towards the side of caution.
+CONFIDENCE_THRESHOLD = OBJECT_DETECTIONS_CONFIG["confidence_threshold"]
+OVERLAP_THRESHOLD = OBJECT_DETECTIONS_CONFIG["overlap_threshold"]
 
 def is_type(value: any, allowed_types: Union[any, List[any], None], exact_type: bool=False) -> bool:
     """

@@ -11,6 +11,7 @@ This is a demo project for demonstrating how to apply machine learning for objec
  ```bash
  docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml build
  docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml up
+ docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml down -v
  ```
 
 - If you need to enter the app docker container run the following in another terminal:

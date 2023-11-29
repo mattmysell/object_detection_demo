@@ -3,3 +3,7 @@
 **.coverage
 **.zip
 **runs
+test_files/input/*
+!test_files/input/test_0*.jpg
+test_files/output/*
+!test_files/output/.gitkeep

@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 """
 Code for running object detection on batches of images, more suitable for GPUs.
+
+As we are running inside a docker container there are extra steps to get the most out of tensorflow, specifially using
+Cuda and running on an NVIDIA GPU. For now we won't go through all those steps as we do not have a clear production
+environment in mind, so will stick to just showing how tensorflow can be used without optimization.
 """
 # Standard Libraries
 from os import environ
@@ -19,8 +23,7 @@ from tensorflow_serving.apis.prediction_service_pb2_grpc import PredictionServic
 
 # Local Files
 from object_detection.detections import is_type_list, Detections
-from object_detection.metadata import get_model_metadata, ModelMetadata
-from object_detection.utils import print_statistics
+from object_detection.metadata import ModelMetadata
 
 # Create connection to the model server
 HOST = environ.get("INFERENCE_HOST", "localhost")
@@ -91,8 +94,9 @@ def detect_batch(images: Union[str, List[NDArray]], model_meta: ModelMetadata, b
     detections = batch_inference(blobs, model_meta, batch_size)
     inference_end = perf_counter()
 
+    output_images = []
     for i, output_image in enumerate(images):
         output_image = detections[i].draw(output_image)
-        cv2.imwrite(f"./output/test_{str(i).zfill(2)}_detect_batch.jpg", output_image)
+        output_images.append(output_image)
 
-    return inference_end - inference_start
+    return output_images, inference_end - inference_start

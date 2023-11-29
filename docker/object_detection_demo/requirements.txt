@@ -7,5 +7,7 @@ ovmsclient==2023.1
 Pillow==10.1.0
 PyYAML==6.0.1
 setuptools==68.2.2
+tensorflow==2.15.0
+tensorflow-serving-api==2.14.1
 Werkzeug==3.0.1
 wheel==0.41.3

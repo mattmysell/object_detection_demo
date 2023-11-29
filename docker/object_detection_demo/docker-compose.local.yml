@@ -10,6 +10,7 @@ services:
       - "../../configs:/home/app/configs"
       - "../../src:/home/app/src"
       - "../../machine_learning/models:/home/app/models"
+      - "../../test_files:/home/app/test_files"
     environment:
       INFERENCE_HOST: inference
       INFERENCE_PORTT: 9000

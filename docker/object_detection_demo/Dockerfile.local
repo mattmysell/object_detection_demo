@@ -1,21 +1,28 @@
 From python:3.11-bullseye
 
-RUN mkdir -p /home/app/src /home/app/configs /home/app/models /home/app/requirements
+RUN mkdir -p /home/app/src /home/app/configs /home/app/models /home/app/test_files /home/app/requirements
 RUN addgroup --system app && adduser --system --group app
 
+# Don't write pycache files in local testing to keep things tidier, do use in production as it reduces startup time
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONBUFFERED=1
+# Add env variables for directories used in python files
+ENV CONFIGS_DIR=/home/app/configs
 ENV MODELS_DIR=/home/app/models
+ENV TEST_FILES_DIR=/home/app/test_files
 
-COPY src/requirements_test.txt /home/app/requirements/requirements_test.txt
-COPY src/requirements.txt /home/app/requirements/requirements.txt
+COPY docker/object_detection_demo/requirements_test.txt /home/app/requirements/requirements_test.txt
+COPY docker/object_detection_demo/requirements.txt /home/app/requirements/requirements.txt
 
 RUN apt-get update \
+    # Install required libraries for OpenCV
     && apt-get install ffmpeg libsm6 libxext6  -y \
+    # Install python libraries
     && pip3 install -r /home/app/requirements/requirements_test.txt \
     && pip3 install -r /home/app/requirements/requirements.txt
 
 RUN chown -R app /home/app
+# Do not run as root user, as this adds a security risk to the host machine
 USER app
 
 WORKDIR /home/app/src

@@ -14,7 +14,6 @@ from numpy.typing import NDArray
 # Local Files
 from object_detection.detections import Detections
 from object_detection.metadata import CLIENT, get_model_metadata, ModelMetadata
-from object_detection.utils import print_statistics
 
 def detect(image: Union[str, NDArray], model_meta: Union[str, ModelMetadata]) -> Tuple[NDArray, float]:
     """
