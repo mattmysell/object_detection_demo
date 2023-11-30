@@ -6,4 +6,4 @@
 test_files/input/*
 !test_files/input/test_0*.jpg
 test_files/output/*
-!test_files/output/.gitkeep
+!test_files/output/sample*.jpg

@@ -2,6 +2,11 @@
 
 This is a demo project for demonstrating how to apply machine learning for object detection and create a backend to request detection of objects in images. The focus is on implementation and the steps required.
 
+<p align="center">
+  <img src="test_files/output/sample_test_01.jpg" alt="drawing" width="480" height="320"/>
+  <img src="test_files/output/sample_test_04.jpg" alt="drawing" width="480" height="320"/>
+</p>
+
 As this is a demo project, multiple tools are on display to help further understanding of development in a professional setting:
 
 - Python3 => main language used
