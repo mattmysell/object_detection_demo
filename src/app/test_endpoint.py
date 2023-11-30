@@ -30,7 +30,7 @@ def test_endpoint_detect_handgun():
     with app.test_client() as client:
         data = {}
         data["file"] = (BytesIO(test_image), "image.jpg")
-        response = client.post("/detect_handguns", data=data, content_type="multipart/form-data")
+        response = client.get("/detect_handguns", data=data, content_type="multipart/form-data")
         assert response.status_code == 200
 
         image_bytes = response.get_data()
@@ -39,5 +39,5 @@ def test_endpoint_detect_handgun():
         cv2.imwrite(join(OUTPUT_DIR, "test_00.jpg"), result_image)
 
         # Test that having no file fails.
-        response = client.post("/detect_handguns")
+        response = client.get("/detect_handguns")
         assert response.status_code == 400

@@ -72,7 +72,10 @@ The test python scripts are prefixed with "try_" to distinguish them from the fi
 
 ```bash
 docker exec -it objection_detection_demo_app_local python3 try_detect.py
+python3 ./src/try_app_speed.py
 ```
+
+- If running on windows you may need to call the second command as `python ./src/try_app_speed.py` instead
 
 ## Running Unit Tests
 
