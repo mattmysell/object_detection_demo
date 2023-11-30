@@ -2,7 +2,7 @@
 """
 Code for comparing speed of detect and detect_batch.
 
-This can be run on the host machine or from inside the objection_detection_demo_app_local docker container.
+This can be run on your PC or from inside the objection_detection_demo_app_local docker container.
 
 Note, we have not optimized the docker container for using Tensorflow with GPU, so this is an unfair comparison but it
 does provide an example of how you might go about writing the code for both CPU and GPU instances.

@@ -15,6 +15,8 @@ from numpy import frombuffer, uint8
 # Local Files
 from app.endpoints import app
 
+# This is for testing; only using docstrings if the naming is not descriptive enough.
+#pylint: disable=missing-function-docstring
 
 TEST_FILES_DIR = environ.get("TEST_FILES_DIR")
 INPUT_DIR = join(TEST_FILES_DIR, "input")
@@ -22,9 +24,6 @@ OUTPUT_DIR = join(TEST_FILES_DIR, "output", "test_endpoint")
 makedirs(OUTPUT_DIR, exist_ok=True)
 
 def test_endpoint_detect_handgun():
-    """
-    test_endpoint_detect_handgun() --> null
-    """
     with open(join(INPUT_DIR, "test_00.jpg"), "rb") as image_file:
         test_image = image_file.read()
 

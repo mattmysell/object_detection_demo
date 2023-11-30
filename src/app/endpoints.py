@@ -18,9 +18,9 @@ from object_detection.detect import detect
 app = Flask("object_detection_demo")
 
 @app.route("/detect_handguns", methods=["POST"])
-def endpoint_detect_handguns():
+def endpoint_detect_handguns() -> Response:
     """
-    endpoint_detect_handguns() --> Response
+    Endpoint for detecting handguns in an image and returning an image with the identified objects.
     """
     image_file = request.files["file"]
 
