@@ -32,20 +32,24 @@ if __name__ == "__main__":
     result_images = []
     inference_milliseconds = []
 
-    for i in range(6):
+    IMAGE_COUNT = 10
+
+    for i in range(IMAGE_COUNT):
         in_path = join(INPUT_DIR, f"test_{str(i).zfill(2)}.jpg")
         result_image, inference_second = detect(in_path, model_metadata)
         result_images.append(result_image)
         inference_milliseconds.append(inference_second*1000)
     for i, result_image in enumerate(result_images):
-        out_path = join(OUTPUT_DIR, f"test_{str(i).zfill(2)}_detect.jpg")
+        out_path = join(OUTPUT_DIR, f"test_{str(i).zfill(2)}_detect_single.jpg")
         cv2.imwrite(out_path, result_image)
-    print_statistics(inference_milliseconds, len(result_images))
+    print_statistics("Single Images", inference_milliseconds, len(result_images))
 
     model_metadata = get_model_metadata("handguns")
-    input_images = [join(INPUT_DIR, f"test_{str(i).zfill(2)}.jpg") for i in range(6)]
+    input_images = [join(INPUT_DIR, f"test_{str(i).zfill(2)}.jpg") for i in range(IMAGE_COUNT)]
     result_images, inference_seconds = detect_batch(input_images, model_metadata, 3)
     for i, result_image in enumerate(result_images):
         out_path = join(OUTPUT_DIR, f"test_{str(i).zfill(2)}_detect_batch.jpg")
         cv2.imwrite(out_path, result_image)
-    print_statistics([inference_seconds*1000], len(input_images))
+    print_statistics("Batched Images", [inference_seconds*1000], len(input_images))
+
+    print("\nSee resulting output images at: test_files/output/try_detect/")

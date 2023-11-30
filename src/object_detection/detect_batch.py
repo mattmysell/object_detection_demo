@@ -64,8 +64,9 @@ def batch_inference(blobs: NDArray, model_meta: ModelMetadata, batch_size: int) 
     detections = []
     request = predict_pb2.PredictRequest()
     request.model_spec.name = model_meta.name
-    for x in range(0, blobs.shape[0] - batch_size + 1, batch_size):
-        batch_blobs = blobs[x:(x + batch_size)]
+    processed = 0
+    while processed < blobs.shape[0]:
+        batch_blobs = blobs[processed:(processed + batch_size)]
         request.inputs["images"].CopyFrom(make_tensor_proto(batch_blobs, shape=batch_blobs.shape))
         batch_output = STUB.Predict(request, 10.0)
         batch_output = make_ndarray(next(iter(batch_output.outputs.values())))
@@ -74,6 +75,7 @@ def batch_inference(blobs: NDArray, model_meta: ModelMetadata, batch_size: int) 
             output = cv2.transpose(batch_output[y])
             detections.append(Detections(model_meta.classes, output, model_shape=model_meta.input_shape))
             detections[-1].apply_non_max_suppression()
+        processed += batch_size
     return detections
 
 def detect_batch(images: Union[str, List[NDArray]], model_meta: ModelMetadata, batch_size: int=1) -> Union[float, None]:

@@ -10,11 +10,11 @@ import numpy as np
 
 # Local Files
 
-def print_statistics(inference_milliseconds: List[float], batch_size: int):
+def print_statistics(title: str, inference_milliseconds: List[float], batch_size: int):
     """
     Print out the statistics from a process that has been run.
     """
-    print("\nProcessing time for all iterations")
+    print(f"\nProcessing time for inference of {title}")
     print(f"    Average time: {np.average(inference_milliseconds):.2f} ms; "
           f"Average speed: {1000*batch_size/np.average(inference_milliseconds):.2f} fps")
     print(f"    Median time: {np.median(inference_milliseconds):.2f} ms; "
