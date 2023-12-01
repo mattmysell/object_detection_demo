@@ -1,0 +1,12 @@
+version: "3"
+services:
+  linter:
+    build:
+      context: ../../
+      dockerfile: ./docker/object_detection_demo/Dockerfile.linter
+    image: objection_detection_demo_linter:latest
+    container_name: objection_detection_demo_linter_local
+    volumes:
+      - "../../:/home/app"
+    restart: "no"
+    command: "python3 /home/app/pylinter.py"

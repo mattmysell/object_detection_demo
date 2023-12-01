@@ -1,0 +1,14 @@
+From python:3.11-bullseye
+
+RUN mkdir -p /home/app
+RUN addgroup --system app && adduser --system --group app
+
+# Perform a lint check
+RUN pip3 install --upgrade pip
+RUN pip3 install setuptools==57.1.0 pylint==3.0.2
+
+RUN chown -R app /home/app
+# Do not run as root user, as this adds a security risk to the host machine
+USER app
+
+WORKDIR /home/app

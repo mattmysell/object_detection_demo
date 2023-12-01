@@ -102,12 +102,14 @@ pip3 install pylint==3.0.2
 
 - For VSCode, the [pylint extension](https://marketplace.visualstudio.com/items?itemName=ms-python.pylint) is helpful, this project was done with version v2023.10.1
 
-- Run the linter script from the root of this project on your PC (not in a docker container)
+- To assess all python code in the project run the linter container, open a terminal at the base of this project and run the following:
 
 ```bash
-python3 pylinter.py
+docker-compose -f ./docker/object_detection_demo/docker-compose.linter.yml build
+docker-compose -f ./docker/object_detection_demo/docker-compose.linter.yml up
 ```
 
+- Note we are expecting the linter container to run and exit afterwards, it should display the results.
 - For an acceptable result we want:
 
   - A minimal amount of convention and refactor messages

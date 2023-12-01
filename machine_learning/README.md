@@ -49,7 +49,7 @@ For training Google Colab was used, to provide a powerful environment for free o
     - Rename 'best.bin' and 'best.xml' to 'handguns.bin' and 'handguns.xml', leave metadata.yaml as is
     - Follow the instrustions for [Running Locally](../README.md#running-locally) to use your new model
 
-### Enhance the Model
+### Enhance the Dataset
 
 The following steps are optional in Roboflow for preparing the Dataset, but will get a better result.
 

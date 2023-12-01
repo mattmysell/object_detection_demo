@@ -2,7 +2,7 @@
 """
 Code for linting the python files in a project including all sub-folders.
 
-To be run from the your PC (not in the docker containers of this project).
+To be run from inside the objection_detection_demo_linter_local docker container.
 """
 ## Standard Libraries
 from fnmatch import fnmatch
