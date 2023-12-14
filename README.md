@@ -18,7 +18,7 @@ As this is a demo project, multiple tools are on display to help further underst
 - Google Colab => running GPU intensive tasks via a web browser, for our custom training
 - Ultralytics => framework for creating, training and running machine learning models
 - Openvino => optimising and running machine learning models
-- Tensorflow => used for sampling how to perform batching of object detection in many images
+- Tensorflow => end to end platform for machine learning, only used for sampling how to perform batching object detection for many images
 
 ## Applying Machine Learning for Obect Detection
 
@@ -41,7 +41,7 @@ This design is simple, and easy to modify for multiple use cases; for example if
 
 ## Running Locally
 
-- Install docker and docker-compose on your PC
+- Install docker desktop on your PC
   - This was written with [Docker Desktop 4.25.1](https://www.docker.com/products/docker-desktop/)
 - Open a terminal at the base of this project and run the following:
 
