@@ -8,3 +8,4 @@ test_files/input/*
 test_files/output/*
 !test_files/output/sample*.jpg
 **.cache
+.vscode

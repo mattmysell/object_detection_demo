@@ -1,4 +1,4 @@
-From python:3.11-bullseye
+FROM python:3.11-bullseye
 
 RUN mkdir -p /home/app
 RUN addgroup --system app && adduser --system --group app

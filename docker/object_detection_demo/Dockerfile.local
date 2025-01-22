@@ -1,4 +1,4 @@
-From python:3.11-bullseye
+FROM python:3.11-bullseye
 
 RUN mkdir -p /home/app/src /home/app/configs /home/app/models /home/app/test_files /home/app/requirements
 RUN addgroup --system app && adduser --system --group app

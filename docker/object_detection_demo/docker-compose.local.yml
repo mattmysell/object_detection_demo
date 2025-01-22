@@ -18,6 +18,8 @@ services:
     command: "python3 /home/app/src/main.py"
     ports:
       - "8080:5000"
+    depends_on:
+      - inference
 
   inference:
     image: openvino/model_server:2023.2
@@ -30,3 +32,19 @@ services:
     ports:
       - "9000:9000"
     command: "--model_name 'handguns' --model_path '/models/handguns'  --port '9000' --layout 'NCHW:NCHW' --shape 'auto' --log_level DEBUG"
+
+  interface:
+    build:
+      context: ../../
+      dockerfile: ./docker/object_detection_demo/Dockerfile.local_ui
+    image: objection_detection_demo_ui:latest
+    container_name: objection_detection_demo_ui_local
+    volumes:
+      - "../../src_ui:/home/app/src"
+    restart: "no"
+    command: "streamlit run /home/app/src/main.py --server.port 8083"
+    ports:
+      - "8083:8083"
+    depends_on:
+      - inference
+      - app
