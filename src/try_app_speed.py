@@ -16,7 +16,7 @@ from time import time
 from typing import List
 
 # Installed Libraries
-from requests import get
+from requests import post
 
 # Local Files
 from object_detection.utils import print_statistics
@@ -43,7 +43,7 @@ def call_detection(inputs: List[any], write_image: bool=False):
 
     start_time = time()
     files = {"file": IMAGES[image_index]}
-    response = get(ENDPOINT, files=files, timeout=5)
+    response = post(ENDPOINT, files=files, timeout=5)
     request_duration = time() - start_time
     milliseconds_store[test_index] = request_duration*1000
 
