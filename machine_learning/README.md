@@ -56,6 +56,7 @@ The following steps are optional in Roboflow for preparing the Dataset, but will
 1. **Clean the images in the dataset**
     - We are only interested in real images, so delete any images from the project that are drawings or cartoons. Photos of real handguns in pictures such as magazines are okay as that is still realistic enough for our objective
     - We don't want images that are far too close to the handguns, where most of the image is a portion of the handgun (less than 50% for example) as our aim is handguns in a scene not handguns in an abstract photograph, so delete these as well
+    - We also don't want images that are ambiguous (hard to tell if a handgun is present), unless we know for certain it is a handgun then we should not assume but in case it is a handgun we should remove it from the dataset so the learning is not confused by it's occurence.
     - A note about the dataset, is that it seems to have a lot more images of handguns on their own as opposed to being carried or held by a person, so our resulting object detection may perform better with handguns on their own
 2. **Clean the tagging in the dataset**
     - For the best result if there are multiple handguns in an image all handguns you can make out should be tagged individually
