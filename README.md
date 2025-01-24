@@ -19,6 +19,7 @@ As this is a demo project, multiple tools are on display to help further underst
 - Ultralytics => framework for creating, training and running machine learning models
 - Openvino => optimising and running machine learning models
 - Tensorflow => end to end platform for machine learning, only used for sampling how to perform batching object detection for many images
+- Streamlit => create and share custom web apps for machine learning and data science
 
 ## Applying Machine Learning for Obect Detection
 
@@ -30,8 +31,8 @@ After creating a model to perform object detection we must consider how to deplo
 
 - We shall utilise Docker with 2 Docker services:
 
-  - python:3.11-bullseye => running our flask application to recieve API requests
-  - openvino/model_server:2023.2 => running the inference for our object detection model/s
+    - python:3.11-bullseye => running our flask application to recieve API requests
+    - openvino/model_server:2023.2 => running the inference for our object detection model/s
 
 - Using these as seperate Docker services allows for independant scaling
 - Each Docker service should be able to run multiple instances in parallel, making this highly scalable
@@ -42,7 +43,7 @@ This design is simple, and easy to modify for multiple use cases; for example if
 ## Running Locally
 
 - Install docker desktop on your PC
-  - This was written with [Docker Desktop 4.25.1](https://www.docker.com/products/docker-desktop/)
+    - This was written with [Docker Desktop 4.25.1](https://www.docker.com/products/docker-desktop/)
 - Open a terminal at the base of this project and run the following:
 
 ```bash
@@ -50,19 +51,9 @@ docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml build
 docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml up
 ```
 
-- Multiple requirements.txt files are used so that for production we can only install the necessary libraries, ignoring the ones used for testing.
+## Web Interface
 
-- If you need to enter the app docker container run the following in another terminal:
-
-```bash
-docker exec -it objection_detection_demo_app_local bash
-```
-
-For cleaning up the docker containers run:
-
-```bash
- docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml down -v
-```
+- After upping the containers, in the previous step, you can checkout the local web interface at [localhost:8083](http://localhost:8083/)
 
 ## Running Tests
 
@@ -111,10 +102,24 @@ docker-compose -f ./docker/object_detection_demo/docker-compose.linter.yml up
 
 - Note we are expecting the linter container to run and exit afterwards, it should display the results.
 - For an acceptable result we want:
-
-  - A minimal amount of convention and refactor messages
-  - No warnings, errors or fatal messages
+    - A minimal amount of convention and refactor messages
+    - No warnings, errors or fatal messages
 
 ## License
 
 As [Ultralytics YoloV8](https://github.com/ultralytics/ultralytics) version 8.0.196 is used in creating the model, this project would fall under the [AGPL license](https://www.gnu.org/licenses/agpl-3.0.en.html) unless you request their [Enterprise license](https://www.ultralytics.com/license) or create the model without Ultralytics YoloV8
+
+## Additional Notes
+
+- Multiple requirements.txt files are used so that for production we can only install the necessary libraries, ignoring the ones used for testing.
+- If you need to enter the app docker container run the following in another terminal:
+
+```bash
+docker exec -it objection_detection_demo_app_local bash
+```
+
+For cleaning up the docker containers run:
+
+```bash
+ docker-compose -f ./docker/object_detection_demo/docker-compose.local.yml down -v
+```
