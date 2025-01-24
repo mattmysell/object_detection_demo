@@ -84,7 +84,7 @@ def main():
     st.set_page_config(
         layout="wide",
         page_title="Object Detection Demo",
-        # page_icon=Image.open(""),
+        page_icon=Image.open("./icon.png"),
         initial_sidebar_state="expanded"
     )
     session_id = get_script_run_ctx().session_id
