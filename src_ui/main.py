@@ -21,7 +21,6 @@ LOGR = ContextLogger("demo_ui")
 
 # Port should be the internal port used in the app, see src/main.py
 ENDPOINT = "http://app:5000/detect_handguns"
-MAX_FILE_SIZE = 10*1024*1024  # 5MB
 
 def image_to_bytes(image: Image) -> bytearray:
     """
@@ -121,7 +120,7 @@ def main():
     if "run_detection_on_upload" not in st.session_state:
         st.session_state["run_detection_on_upload"] = True
 
-    st.write("## Detect Handguns in an Image")
+    st.write("## Detect Handguns in an Image :eyes:")
     st.write("Try uploading an image you wish to detect handguns in. Result images can be "
             "downloaded from the sidebar.")
 
@@ -149,10 +148,7 @@ def main():
     if (my_upload is not None) and st.session_state["run_detection_on_upload"]:
         # Do not run detection on upload if the session reruns.
         st.session_state["run_detection_on_upload"] = False
-        if my_upload.size > MAX_FILE_SIZE:
-            st.error("The uploaded file is too large. Please upload an image smaller than 10MB.")
-        else:
-            detect(my_upload, empty_1, empty_2)
+        detect(my_upload, empty_1, empty_2)
 
     display(empty_1, empty_2)
     st.sidebar.markdown("\n\n### Download")

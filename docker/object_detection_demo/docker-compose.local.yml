@@ -42,7 +42,7 @@ services:
     volumes:
       - "../../src_ui:/home/app/src"
     restart: "no"
-    command: "streamlit run /home/app/src/main.py --server.port 8083"
+    command: "streamlit run /home/app/src/main.py --server.port 8083 --server.maxUploadSize=10"
     ports:
       - "8083:8083"
     depends_on:
